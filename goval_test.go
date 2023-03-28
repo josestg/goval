@@ -61,3 +61,34 @@ func TestEach(t *testing.T) {
 		}
 	})
 }
+
+func TestExecute(t *testing.T) {
+	t.Run("when validation fails", func(t *testing.T) {
+		ctx := context.Background()
+
+		err := goval.Execute(ctx,
+			goval.String().Required().Min(2).Build("a"),
+			goval.Number[int]().Required().Min(8).Build(7),
+		)
+		var exp goval.Errors
+		if !errors.As(err, &exp) {
+			t.Fatalf("expect error type: %T; got error type: %T", exp, err)
+		}
+
+		if len(exp) != 2 {
+			t.Fatalf("expect two errors")
+		}
+	})
+
+	t.Run("when validation ok", func(t *testing.T) {
+		ctx := context.Background()
+
+		err := goval.Execute(ctx,
+			goval.String().Required().Min(2).Build("ab"),
+			goval.Number[int]().Required().Min(8).Build(8),
+		)
+		if err != nil {
+			t.Fatalf("expect not error")
+		}
+	})
+}
