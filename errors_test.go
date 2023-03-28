@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+func TestRuleError(t *testing.T) {
+	err := goval.NewRuleError(goval.NumberMin, 2, 3)
+	exp := `{"code":3001,"input":2,"args":[3]}`
+	got := err.Error()
+	if got != exp {
+		t.Errorf("expect string Error: %q; got %q", exp, got)
+	}
+}
+
 func TestTextError(t *testing.T) {
 	err := goval.TextError("my-error")
 	exp := "my-error"
