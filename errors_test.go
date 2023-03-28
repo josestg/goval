@@ -1,9 +1,38 @@
 package goval_test
 
 import (
+	"errors"
 	"github.com/pkg-id/goval"
 	"testing"
 )
+
+func TestKeyError(t *testing.T) {
+	t.Run("Error: using marshal able error", func(t *testing.T) {
+		err := goval.KeyError{
+			Key: "my-key",
+			Err: goval.TextError("my-error"),
+		}
+
+		str := err.Error()
+		exp := `{"key":"my-key","err":"my-error"}`
+		if str != exp {
+			t.Errorf("expect string Error: %q; got %q", exp, str)
+		}
+	})
+
+	t.Run("Error: using an error that not implement json marshaller", func(t *testing.T) {
+		err := goval.KeyError{
+			Key: "my-key",
+			Err: errors.New("my-error"), // it should be converted by the json.Marshal of KeyError.
+		}
+
+		str := err.Error()
+		exp := `{"key":"my-key","err":"my-error"}`
+		if str != exp {
+			t.Errorf("expect string Error: %q; got %q", exp, str)
+		}
+	})
+}
 
 func TestErrors(t *testing.T) {
 	t.Run("Error: using var", func(t *testing.T) {
