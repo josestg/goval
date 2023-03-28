@@ -6,6 +6,15 @@ import (
 	"testing"
 )
 
+func TestTextError(t *testing.T) {
+	err := goval.TextError("my-error")
+	exp := "my-error"
+	got := err.Error()
+	if got != exp {
+		t.Errorf("expect string Error: %q; got %q", exp, got)
+	}
+}
+
 func TestKeyError(t *testing.T) {
 	t.Run("Error: using marshal able error", func(t *testing.T) {
 		err := goval.KeyError{
