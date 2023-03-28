@@ -34,3 +34,30 @@ func TestNamed(t *testing.T) {
 		}
 	})
 }
+
+func TestEach(t *testing.T) {
+	t.Run("when validation fails", func(t *testing.T) {
+		ctx := context.Background()
+		val := []string{"a", "bc", "d", "ef"}
+
+		err := goval.Each(goval.String().Required().Min(2).Build).Build(val).Validate(ctx)
+		var exp goval.Errors
+		if !errors.As(err, &exp) {
+			t.Fatalf("expect error type: %T; got error type: %T", exp, err)
+		}
+
+		if len(exp) != 2 {
+			t.Fatalf("expect two errors")
+		}
+	})
+
+	t.Run("when validation ok", func(t *testing.T) {
+		ctx := context.Background()
+		val := []string{"aa", "bc", "dd", "ef"}
+
+		err := goval.Each(goval.String().Required().Min(2).Build).Build(val).Validate(ctx)
+		if err != nil {
+			t.Fatalf("expect not error")
+		}
+	})
+}
